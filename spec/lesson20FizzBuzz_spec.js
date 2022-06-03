@@ -13,4 +13,9 @@ describe("FizzBuzz", function () {
         const result = nums(15);
         expect(result).to.equal("FizzBuzz");
     })
+
+    it("number is not divisible by 3 or 5 return the number itself ", function () {
+        const result = nums(8);
+        expect(result).to.equal(String(result));
+    })
 })
