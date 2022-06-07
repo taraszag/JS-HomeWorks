@@ -1,18 +1,16 @@
-function nums(num) {
-    if (num % 3 == 0 && num % 5 != 0) {
-        return "Fizz"
+function num(num) {
+    if (num % 5 == 0 && num % 3 == 0) {
+        return "FizzBuzz";
     }
-    else if (num % 5 == 0 && num % 3 != 0) {
-        return "Buzz"
+    if (num % 3 == 0) {
+        return "Fizz";
     }
-    else if (num % 3 == 0 && num % 5 == 0) {
-        return "FizzBuzz"
+    if (num % 5 == 0) {
+        return "Buzz";
     }
-    else {
-        return String(num)
-    }
+    return `${num}`
 }
 
-for (let i = 1; i <=30; i += 1) {
-    console.log(nums(i))
+for (let i = 1; i <= 30; i += 1) {
+    console.log(`${i} = ${num(i)}`)
 }
