@@ -26,23 +26,21 @@ function getIndexOfOperation(str, operation) {
 // "2*3" => 1
 // "(2+3)*4" => 5
 function getIndexOfMul(str) {
-    let isInsideQuotes = false
+    let par = 0
     for (let i = 0; i < str.length; i += 1) {
         if (str[i] == "(") {
-            isInsideQuotes = true;
-            continue;
+            par += 1;
         }
         if (str[i] == ")") {
-            isInsideQuotes = false;
-            continue;
+            par -= 1;
         }
-        if (!isInsideQuotes && str[i] == "*") {
+        if (par == 0 && str[i] == "*") {
             return i;
         }
     }
     return -1
 }
-console.log(getIndexOfMul("(2+3)*4"));
+console.log(getIndexOfMul("(4+(3+(2-7)*5)*2)*4+5"));
 
 // "5" => 5
 // "23*5" => 23
@@ -56,7 +54,7 @@ function getFirstTermMul(str) {
     if (str[0] == "(") {
         return calculateSum(str.substr(1, indexOfMul - 2))
     }
-    else { return Number(str.substr(0, indexOfMul))}
+    else { return Number(str.substr(0, indexOfMul)) }
 }
 console.log(getFirstTermMul("5"))
 console.log(getFirstTermMul("23*5"))
@@ -81,17 +79,15 @@ console.log(calculateMul("(1+2)*(2+3)*2"))
 // "(2+3)*(4+5)+4" => 11
 
 function getIndexOfSum(str) {
-    let isInsideQuotes = false
+    let par = 0
     for (let i = 0; i < str.length; i += 1) {
         if (str[i] == "(") {
-            isInsideQuotes = true;
-            continue;
+            par += 1;
         }
         if (str[i] == ")") {
-            isInsideQuotes = false;
-            continue;
+            par -= 1
         }
-        if (!isInsideQuotes && str[i] == "+") {
+        if (par == 0 && str[i] == "+") {
             return i;
         }
     }
@@ -99,6 +95,7 @@ function getIndexOfSum(str) {
 }
 console.log(getIndexOfSum("2*3+4"));
 console.log(getIndexOfSum("(2+3)*(4+5)+4"));
+console.log(getIndexOfSum("(4+(3+(2-7)*5)*2)*4+5"));
 
 // "2+3" => 2
 // "2*3+4" => 6
@@ -120,4 +117,7 @@ let s = "1+2*3+13*2";
 console.log(calculateSum(s)); // 33
 
 s = "(1+2)*3+(2+6)*(3+8)"
-		console.log(calculateSum(s)); // 97
+console.log(calculateSum(s)); // 97
+
+s = "(4+(3+(2-7)*5)*2)*4+5" //-155
+console.log(calculateSum(s));
