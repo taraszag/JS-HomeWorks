@@ -14,3 +14,4 @@ function num(num) {
 for (let i = 1; i <= 30; i += 1) {
     console.log(`${i} = ${num(i)}`)
 }
+console.log(num(num))

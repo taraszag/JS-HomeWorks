@@ -119,5 +119,5 @@ console.log(calculateSum(s)); // 33
 s = "(1+2)*3+(2+6)*(3+8)"
 console.log(calculateSum(s)); // 97
 
-s = "(4+(3+(2-7)*5)*2)*4+5" //-155
+s = "(4+(3+(2+7)*5)*2)*4+5" //-155
 console.log(calculateSum(s));
