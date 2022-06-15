@@ -61,4 +61,3 @@ const person = {
   t.fahrenheit = 100;
   console.log(t.fahrenheit) // 100
   console.log(t.celsius) // 37.7778
-  console.log(5/9*(100-32))
