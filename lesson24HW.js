@@ -30,3 +30,4 @@ console.log(t1.fahrenheit)
 t1.celsius = 25;
 t1.fahrenheit = 100;
 console.log(t1.celsius)
+console.log(t1.fahrenheit)
