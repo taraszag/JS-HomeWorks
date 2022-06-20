@@ -1,25 +1,23 @@
 function ansver(ans) {
-    let ansverBob = 'does not matter!'
     let tempStr = ans
     tempStr = tempStr.toUpperCase()
-    
-    for (let i = 1; i < ans.length; i += 1) {
-        if (ans[i] == "?") {
-            ansverBob = "Of course"
-        };
-        if (tempStr == ans && ans[i] == "!") {
-            ansverBob = "Wow relax!"
-        }
-  
-        if (tempStr == ans && ans[i] == "?") {
-            ansverBob = "Calm down,i know!"
-        }
-    }
-    if (ans.length == 0) {
-        ansverBob = "Good! let it be!"
-    }
+    let elm = "?"
 
-    return ansverBob
+    if (ans.indexOf(elm) != -1 && tempStr != ans) {
+        return "Of course"
+    }
+    else if (tempStr == ans && ans.indexOf(elm) == -1 && ans.length != 0 ) {
+       return "Wow relax!"
+    }
+    else if (ans.indexOf(elm) != -1 && tempStr == ans) {
+        return "Calm down,i know!"
+    }
+    else if (ans.length == 0) {
+        console.log(ans.length)
+       return "Good! let it be!"
+    }
+    else if (ans.indexOf(elm) == -1 && tempStr != ans )
+    return "does not matter!"
 }
 result = prompt("Enter questions for Bob: ");
 

@@ -4,7 +4,7 @@ describe("questions for Bob",function(){
         expect(result).to.equal("Of course")
     });
     it("Bob's response 'Wow relax!'", function(){
-        const result = ansver("COME HERE!");
+        const result = ansver("COME HERE");
         expect(result).to.equal("Wow relax!")
 
     });
@@ -18,7 +18,7 @@ describe("questions for Bob",function(){
     });
 
     it("Bob's response 'does not matter!'",function(){
-        const result = ansver('123')
+        const result = ansver('hello bob')
         expect(result).to.equal("does not matter!")
     });
 
