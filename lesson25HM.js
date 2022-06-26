@@ -48,18 +48,15 @@ let p1 = makeArithmeticProgression(6, 2);
 
 // H.A. 3
 function makeSequence(a) {
-    let b = a
-    let n =1
-    let n2 =1
-    return function factorial() {
+    let n =0
+    return function() {
         n+=1
-        n2+=1
         let result = 1;
         for (let i = 1; i <=n; i+= 1) {
         result = result * i;
       }
-        a = Math.pow(b,n2)/result;
-        return a;
+        b = Math.pow(a,n)/result;
+        return b;
     } 
 
 }
