@@ -1,0 +1,68 @@
+h1 {
+    background-color: #A84D9B;
+    color: aliceblue;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+
+}
+
+img {
+    width: 700px;
+    text-align: left;
+}
+
+.motto {
+    background-color: #FFB90E;
+    text-align: right;
+    margin: 0;
+    padding: 50;
+
+}
+
+.hobby-question {
+    background-color: #A84D9B;
+    color: aliceblue;
+    text-align: center;
+    margin: 0;
+    padding: 10;
+
+}
+
+div {
+    background-color: #FF5355;
+    margin: 0;
+    padding: 50;
+}
+
+h3 {
+    background-color: #0DA897;
+    color: aliceblue;
+    text-align: center;
+    margin: 0;
+    padding: 20;
+
+}
+
+p.for-a-hobby {
+    background-color: #265CA7;
+    text-align: right;
+    margin: 0;
+    padding: 30;
+
+
+}
+
+p {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+
+}
+
+.hobby-names {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+
+}
