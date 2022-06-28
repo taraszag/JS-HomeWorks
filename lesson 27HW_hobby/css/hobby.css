@@ -29,10 +29,10 @@ img {
 
 }
 
-div {
+ol,div {
     background-color: #FF5355;
     margin: 0;
-    padding: 50;
+    padding: 30;
 }
 
 h3 {
