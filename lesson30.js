@@ -38,24 +38,38 @@ function myFindIndex(array, predicate) {
 }
 
 // H.A. 
-function myForEach(array, fun) {
-
-
+function myForEach(array, fun, findIndex = 0) {
+    for (findIndex; findIndex < array.length; findIndex += 1) {
+        if (fun(array[findIndex])) return array[findIndex];
+    }
+    return
 }
 
 // H.A. 
 function myEvery(array, predicate) {
-
+    for (let i = 0; i < array.length; i += 1) {
+        if (!predicate(array[i])) return false
+    }
+    return true
 }
 
 // H.A. 
 function mySome(array, predicate) {
-
+    for (let i = 0; i < array.length; i += 1) {
+        if (predicate(array[i])) return true
+    }
+    return false
 }
 
 // H.A. 
 function myFilter(array, predicate) {
-
+    let tempArr = []
+    for (let i = 0; i < array.length; i += 1) {
+        if (predicate(array[i])) {
+            tempArr.push(array[i])
+        }
+    }
+    return tempArr
 }
 
 console.log(numbers.includes(2)); // true
@@ -82,8 +96,11 @@ console.log(fruits.every(f => f.includes("a"))); // false
 console.log(people.every(p => p.age >= 18)); // false
 console.log(myEvery(people, p => p.age >= 18)); // false
 
+console.log(mySome(numbers, n => n % 3 == 0));
+console.log(mySome(numbers, n => n % 4 == 0));
 console.log(numbers.some(n => n % 3 == 0)); // true
 console.log(numbers.some(n => n % 4 == 0)); // false
+
 console.log(fruits.some(f => f.includes("a"))); // true
 console.log(people.some(p => p.firstName.length == 4)); // true;
 
@@ -93,7 +110,8 @@ console.log(fruits.filter(f => f.includes("i")));
 console.log(fruits.filter(f => f.includes("w")));
 console.log(people.filter(p => p.age >= 18));
 console.log(myFilter(people, p => p.age >= 18));
+console.log(myFilter(fruits,f => f.includes("a")))
 
-console.log(fruits
-    .filter(f => f.includes("a") && f.includes("b"))
-    .findIndex(f => f.includes("b")));
+// console.log(fruits
+//     .filter(f => f.includes("a") && f.includes("b"))
+//     .findIndex(f => f.includes("b")));
