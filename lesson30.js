@@ -40,9 +40,8 @@ function myFindIndex(array, predicate) {
 // H.A. 
 function myForEach(array, fun, findIndex = 0) {
     for (findIndex; findIndex < array.length; findIndex += 1) {
-        if (fun(array[findIndex])) return array[findIndex];
+        fun(array[findIndex]);
     }
-    return
 }
 
 // H.A. 
@@ -115,3 +114,18 @@ console.log(myFilter(fruits,f => f.includes("a")))
 // console.log(fruits
 //     .filter(f => f.includes("a") && f.includes("b"))
 //     .findIndex(f => f.includes("b")));
+
+console.log(numbers.map(x => x * x));
+console.log(numbers);
+// console.log(fruits.map(letters =>letters.length)
+console.log(fruits.map(fruit =>({length:fruit.length, name:fruit})))
+
+function myMap(array, func) {
+    tempArr = []
+    for (let i = 0; i < array.length; i += 1) {
+            tempArr.push(func(array[i]))
+        }
+        return tempArr
+    }
+
+console.log(fruits.map(f => ({name: f, letters: f.length})).filter(f => f.letters>4))
