@@ -1,13 +1,28 @@
 'use strict';
 
-// удаляет существующие task по одному
-const delLi = document.querySelectorAll('.delete');
+// удаляет task по одному
 
-delLi.forEach((list) => {
-    list.addEventListener('click', ()=> { list.parentElement.remove() });
-});
+function deleteItem(event) {
+    if (
+      event.target.nodeName != "A" ||
+      !event.target.classList.contains("delete")
+    ) {
+     return
+    }
+  
+    event.target.parentElement.remove();
+  }
+  
+  document.getElementById("task-list").addEventListener("click", deleteItem);
+  
 
-//удвлить все tasks
+// const delLi = document.querySelectorAll('.delete');
+
+// delLi.forEach((list) => {
+//     list.addEventListener('click', ()=> { list.parentElement.remove() });
+// });
+
+//удaлить все tasks
 function addButtonEventListener() {
     let allLi = document.querySelector('.no-bullet');
     while (allLi.firstChild) {
@@ -43,11 +58,11 @@ list.appendChild(elementItem);
 
 // удалить новые task
 
-a.addEventListener('click', () => {
-    list.removeChild(elementItem);
-  });
+// a.addEventListener('click', () => {
+//     list.removeChild(elementItem);
+//   });
 
-input.focus();
+// input.focus();
 
 });
 
