@@ -3,9 +3,7 @@
 const tasks = document.getElementById("task-list");
 const form = document.getElementById("todo-form");
 const taskInput = form.querySelector("input");
-let inputCheckbox
 console.log(tasks)
-
 
 let itemsArray = []
 if (localStorage.getItem('items')) {
@@ -14,18 +12,21 @@ if (localStorage.getItem('items')) {
     itemsArray = []
 }
 localStorage.setItem('items', JSON.stringify(itemsArray))
+
 const containts = JSON.parse(localStorage.getItem('items'))
-console.log(containts)
 
 let currentId = 0;
-const onNewTaskSubmit = (text) => {
+
+// new form in html
+const onNewTaskSubmit = (text, checkboxValue, colorText) => {
     const li = document.createElement("li");
     li.className = "todo-item";
     li.id = `${currentId}`;
+    li.style = colorText
     currentId += 1;
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    console.log(checkbox.checked)
+    checkbox.checked = checkboxValue
     const taskText = document.createTextNode(` ${text} `);
     const deleteButton = document.createElement("a");
     deleteButton.className = "delete";
@@ -37,30 +38,37 @@ const onNewTaskSubmit = (text) => {
     tasks.appendChild(li);
 }
 
-
+// add Event listener new form
 form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     if (taskInput.value === "") return;
 
-
-    itemsArray.push({ id: currentId, text: taskInput.value, checkbox:false });
+    itemsArray.push({ id: currentId, text: taskInput.value, checkbox: false, color: "color:black" });
     localStorage.setItem('items', JSON.stringify(itemsArray));
     onNewTaskSubmit(itemsArray[currentId].text);
     taskInput.value = "";
 });
 
-
-function checked(event) {
-    let d = Number(event.target.parentNode.id)
+// change checkbox value
+tasks.addEventListener('input', function (e) {
+    e.preventDefault()
+    let d = Number(e.target.parentNode.id)
     for (let i = 0; i < itemsArray.length; i += 1) {
         if (d == i) {
-            itemsArray[i].checkbox = true
+            itemsArray[i].checkbox = e.target.checked
+            if (e.target.checked) {
+                itemsArray[i].color = "color:grey";
+                e.path[1].style.cssText = "color:grey";
+            } else {
+                itemsArray[i].color = "color:black";
+                e.path[1].style.cssText = "color:black"
+            }
+    
         }
+        localStorage.setItem('items', JSON.stringify(itemsArray));
     }
-    console.log(itemsArray)
-}
-tasks.addEventListener("input", checked);
+})
 
 // delete task
 function deleteItem(event) {
@@ -69,8 +77,8 @@ function deleteItem(event) {
     ) {
         return;
     }
-
     event.target.parentNode.remove();
+
     let d = Number(event.target.parentNode.id)
     for (let i = 0; i < itemsArray.length; i += 1) {
         if (d == i) {
@@ -94,7 +102,7 @@ const clearTasks = document.querySelector('.clear-tasks.button')
 clearTasks.addEventListener('click', addButtonEventListener)
 
 containts.forEach(() => {
-    onNewTaskSubmit(itemsArray[currentId].text);
+    onNewTaskSubmit(itemsArray[currentId].text, itemsArray[currentId].checkbox, itemsArray[currentId].color);
 });
 
 // filter task
