@@ -3,6 +3,19 @@
 const tasks = document.getElementById("task-list");
 const form = document.getElementById("todo-form");
 const taskInput = form.querySelector("input");
+const delTask = document.getElementById("delete");
+let allLi = document.querySelector('.no-bullet');
+
+// переопределение content-Type, для получение json
+const post = (url, data) => {
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    });
+}
 
 let currentId = 0;
 
@@ -27,35 +40,23 @@ const onNewTaskSubmit = (text, checkboxValue, colorText) => {
     tasks.appendChild(li);
 }
 
-fetch("api/tasks")
-    .then(response => response.json())
-    .then(obj => obj.forEach(elem => {
-        onNewTaskSubmit(elem.text);
-    }))
-    .catch(err => console.log(err));
+// add Event listener new form
+form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (taskInput.value === "") return;
+    
+    while (allLi.firstChild) {
+        allLi.removeChild(allLi.firstChild);
+    }
 
-let itemsArray = []
-if (localStorage.getItem('items')) {
-    itemsArray = JSON.parse(localStorage.getItem('items'))
-} else {
-    itemsArray = []
-}
-localStorage.setItem('items', JSON.stringify(itemsArray))
+    post(`api/text-add`, { text: taskInput.value })
+        .then(response => response.json())
+        .then(obj => obj.items.forEach(element => onNewTaskSubmit(element)))
+        .catch(err => console.log(err));
+    taskInput.value = "";
+})
 
-const containts = JSON.parse(localStorage.getItem('items'))
-console.log(containts)
 
-// // add Event listener new form
-// form.addEventListener('submit', function (e) {
-//     e.preventDefault();
-
-//     if (taskInput.value === "") return;
-
-//     itemsArray.push({ id: currentId, text: taskInput.value, checkbox: false, color: "color:black" });
-//     localStorage.setItem('items', JSON.stringify(itemsArray));
-//     onNewTaskSubmit(itemsArray[currentId].text, itemsArray[currentId].checkbox, itemsArray[currentId].color)
-//     taskInput.value = "";
-// });
 
 // change checkbox value
 tasks.addEventListener('input', function (e) {
@@ -78,39 +79,41 @@ tasks.addEventListener('input', function (e) {
 })
 
 // delete task
-function deleteItem(event) {
+tasks.addEventListener("click", event => {
     if (
         !event.target.classList.contains("delete")
     ) {
         return;
     }
     event.target.parentNode.remove();
-
-    let d = Number(event.target.parentNode.id)
-    for (let i = 0; i < itemsArray.length; i += 1) {
-        if (d == i) {
-            itemsArray.splice(d, 1)
-        }
-    }
-    localStorage.setItem('items', JSON.stringify(itemsArray));
-}
-tasks.addEventListener("click", deleteItem);
-
-// //delete all tasks
-function addButtonEventListener() {
-    let allLi = document.querySelector('.no-bullet');
-    localStorage.clear()
+    
     while (allLi.firstChild) {
         allLi.removeChild(allLi.firstChild);
     }
+
+    let index = Number(event.target.parentNode.id)
+    console.log(index)
+    post(`api/delete-task/${index}`)
+        .then(response => response.json())
+        .then(obj => obj.items.forEach(element => onNewTaskSubmit(element)))
+        .catch(err => console.log(err));
+});
+
+// //delete all tasks
+function addButtonEventListener() {
+    while (allLi.firstChild) {
+        allLi.removeChild(allLi.firstChild);
+    }
+    post('api/delete-all')
+        .then(response => response.json())
+        .then(obj => obj.items.forEach(element => onNewTaskSubmit(element)))
+        .catch(err => console.log(err));
 
 }
 const clearTasks = document.querySelector('.clear-tasks.button')
 clearTasks.addEventListener('click', addButtonEventListener)
 
-// containts.forEach(() => {
-//     onNewTaskSubmit(itemsArray.text, itemsArray[currentId].checkbox, itemsArray[currentId].color);
-// });
+
 // filter task
 let filter = function () {
     let input = document.getElementById("filter")
@@ -128,3 +131,9 @@ let filter = function () {
     })
 }
 filter()
+
+// view text
+fetch("api/text-result")
+    .then(response => response.json())
+    .then(obj => obj.items.forEach(element => onNewTaskSubmit(element)))
+    .catch(err => console.log(err));
