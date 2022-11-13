@@ -9,14 +9,20 @@ const port = 3000
 
 const state = {
     count: 0,
-    items: []
+    items: [],
+    checkBox: []
+    
 };
-
 app.use(express.static("publicHW"))
 //набор ф-ций для автоматизации = json.stringify
 app.use(express.json());
 
 
+// app.post ('/api/check-box', function (req, res) {
+//     state.checkBox.push(req.body);
+//     console.log(state.checkBox)
+//     res.json({ checkBox: state.checkBox });
+// })
 
 app.post('/api/text-add', function (req, res) {
     state.items.push(req.body.text);

@@ -24,8 +24,8 @@ const onNewTaskSubmit = (text, checkboxValue, colorText) => {
     const li = document.createElement("li");
     li.className = "todo-item";
     li.id = `${currentId}`;
+    currentId+=1
     li.style = colorText
-    currentId += 1;
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = checkboxValue
@@ -44,10 +44,10 @@ const onNewTaskSubmit = (text, checkboxValue, colorText) => {
 form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (taskInput.value === "") return;
-    
     while (allLi.firstChild) {
         allLi.removeChild(allLi.firstChild);
     }
+    currentId = 0
 
     post(`api/text-add`, { text: taskInput.value })
         .then(response => response.json())
@@ -61,21 +61,26 @@ form.addEventListener('submit', function (e) {
 // change checkbox value
 tasks.addEventListener('input', function (e) {
     e.preventDefault()
-    let d = Number(e.target.parentNode.id)
-    for (let i = 0; i < itemsArray.length; i += 1) {
-        if (d == i) {
-            itemsArray[i].checkbox = e.target.checked
-            if (e.target.checked) {
-                itemsArray[i].color = "color:grey";
-                e.path[1].style.cssText = "color:grey";
-            } else {
-                itemsArray[i].color = "color:black";
-                e.path[1].style.cssText = "color:black"
-            }
+    let index = Number(e.target.parentNode.id)
+    let b = e.target.checked
+    post(`/api/check-box/${b}`)
+    .then(response => response.json())
+    .then(obj => console.log(obj.checkBox))
+    .catch(err => console.log(err));
+    // for (let i = 0; i < itemsArray.length; i += 1) {
+    //     if (d == i) {
+    //         itemsArray[i].checkbox = e.target.checked
+    //         if (e.target.checked) {
+    //             itemsArray[i].color = "color:grey";
+    //             e.path[1].style.cssText = "color:grey";
+    //         } else {
+    //             itemsArray[i].color = "color:black";
+    //             e.path[1].style.cssText = "color:black"
+    //         }
 
-        }
-        localStorage.setItem('items', JSON.stringify(itemsArray));
-    }
+    //     }
+    //     localStorage.setItem('items', JSON.stringify(itemsArray));
+    // }
 })
 
 // delete task
@@ -90,9 +95,9 @@ tasks.addEventListener("click", event => {
     while (allLi.firstChild) {
         allLi.removeChild(allLi.firstChild);
     }
+    currentId = 0
 
     let index = Number(event.target.parentNode.id)
-    console.log(index)
     post(`api/delete-task/${index}`)
         .then(response => response.json())
         .then(obj => obj.items.forEach(element => onNewTaskSubmit(element)))
