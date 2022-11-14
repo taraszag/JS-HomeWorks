@@ -66,6 +66,10 @@ app.get('/api/tasks', (req, res) => {
   res.json(state.tasks);
 });
 
+app.get('/api/filters', (req, res) => {
+  const task = state.itemsFilter
+  res.json(task);
+});
 
 app.listen(port, () => {
   console.log(`Server started  127.0.0.1:${port}`);

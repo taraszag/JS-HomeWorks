@@ -21,25 +21,25 @@ function showNewTodo({ id, text, isDone }) {
     const li = document.createElement("li");
     li.className = "todo-item";
     li.id = `item_${id}`;
-  
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = isDone;
-  
+
     const taskText = document.createTextNode(` ${text} `);
-  
+
     const deleteButton = document.createElement("a");
     deleteButton.className = "delete";
     deleteButton.href = "#"
     deleteButton.appendChild(document.createTextNode("x"));
-  
+
     li.appendChild(checkbox);
     li.appendChild(taskText);
     li.appendChild(deleteButton);
-  
+
     tasks.appendChild(li);
-  
-  }
+
+}
 
 function onNewTodo(event) {
     event.preventDefault();
@@ -115,30 +115,37 @@ function deleteAllTasks() {
     }
 }
 
-
-
-function filter() {
+function filterTasks(item){
     let elements = document.querySelectorAll("#task-list li")
+    elements.forEach(elem => {
+        if (elem.textContent.indexOf(item) != -1) {
+            elem.style.display = '';
+        } else {
+            elem.style.display = 'none'
+        }
+    })
+}
+
+function filterPost() {
     post('/api/filter', { textFilter: filterInput.value })
         .then(res => res.json())
-        .then(item => {
-            elements.forEach(elem => {
-                if (elem.textContent.indexOf(item) != -1) {
-                    elem.style.display = '';
-                } else {
-                    elem.style.display = 'none'
-                }
-            })
-        })
+        .then(item => filterTasks(item))
 }
 
 form.addEventListener("submit", onNewTodo);
 tasks.addEventListener("click", onStatusChanged);
 tasks.addEventListener("click", deleteOneTask);
 clearTasks.addEventListener("click", deleteAllTasks);
-filterInput.addEventListener("keyup", filter);
+filterInput.addEventListener("keyup", filterPost);
 
 
 fetch('/api/tasks')
-  .then(res => res.json())
-  .then(tasks => tasks.forEach(t => showNewTodo(t))); 
+    .then(res => res.json())
+    .then(tasks => tasks.forEach(t => showNewTodo(t))); 
+
+    fetch('/api/filters')
+    .then(res => res.json())
+    .then(item => {
+        filterInput.value = item
+        filterTasks(item)
+        })
