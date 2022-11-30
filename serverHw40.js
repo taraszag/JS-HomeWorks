@@ -22,11 +22,12 @@ app.use(express.json());
 let id = 1;
 
 app.post('/api/task', (req, res) => {
-  const task = { id, text: req.body.text, isDone: req.body.isDone };
+  const task = { id, text: req.body.text, isDone: req.body.isDone, dueDate: req.body.date };
   state.tasks.push(task);
   id += 1;
   res.json(task);
 });
+
 
 app.post('/api/task/:id/update', (req, res) => {
   const id = Number(req.params.id);

@@ -15,42 +15,71 @@ const form = document.getElementById("todo-form");
 const taskInput = form.querySelector("input");
 const clearTasks = document.querySelector('.clear-tasks.button')
 const filterInput = document.getElementById("filter")
+const urgency = form.querySelector("select")
 
-function showNewTodo({ id, text, isDone }) {
 
-    const li = document.createElement("li");
-    li.className = "todo-item";
-    li.id = `item_${id}`;
+class Tasks {
+    constructor({ id, text, isDone , dueDate ="not urgent"}) {
+        this.id = id;
+        this.text = text
+        this.isDone = isDone
+        this.dueDate = dueDate
+    }
+    showNewTodo() {
+        const li = document.createElement("li");
+        li.className = "todo-item";
+        li.id = `item_${this.id}`;
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = isDone;
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = this.isDone;
 
-    const taskText = document.createTextNode(` ${text} `);
+        const taskText = document.createTextNode(` ${this.text} `);
 
-    const deleteButton = document.createElement("a");
-    deleteButton.className = "delete";
-    deleteButton.href = "#"
-    deleteButton.appendChild(document.createTextNode("x"));
+        const taskDate = document.createTextNode(` ${this.dueDate} `);
+        
+        const deleteButton = document.createElement("a");
+        deleteButton.className = "delete";
+        deleteButton.href = "#"
+        deleteButton.appendChild(document.createTextNode("x"));
 
-    li.appendChild(checkbox);
-    li.appendChild(taskText);
-    li.appendChild(deleteButton);
+        li.appendChild(checkbox);
+        li.appendChild(taskText);
+        li.appendChild(taskDate);
+        li.appendChild(deleteButton);
+        tasks.appendChild(li);
 
-    tasks.appendChild(li);
-
+    }
 }
 
+// class Urgency extends Tasks {
+//     constructor({ id, text, isDone, dueDate }) {
+//         super({ id, text, isDone });
+//         this.dueDate = dueDate
+//     }
+//     showNewTodoWithDate() {
+
+//       }
+// }
 async function onNewTodo(event) {
     event.preventDefault();
 
     const text = taskInput.value;
+    const date = urgency.nextSibling.value
     if (text == '') return;
     taskInput.value = '';
+    urgency.value = "notUrgent"
+    urgency.nextSibling.value = ''
+    urgency.nextSibling.style = "display:none"
+        let response = await post('/api/task', { text, isDone: false,date})
+        let data = await response.json()
+        new Tasks(data).showNewTodo()
+    }
 
-    let response = await post('/api/task', { text, isDone: false })
-    let data = await response.json()
-    showNewTodo(data)
+function onStatusUrgent() {
+    if (urgency.value == "urgent") {
+        urgency.nextSibling.style = "display:block"
+    }
 }
 
 async function onStatusChanged(event) {
@@ -62,8 +91,7 @@ async function onStatusChanged(event) {
     const [, id] = parent.id.split('_');
     try {
         let response = await post(`/api/task/${id}/update`, { isDone: checked })
-        let data = await response
-        if (!data.ok) {
+        if (!response.ok) {
             target.checked = !checked;
         }
     } catch (_) {
@@ -72,7 +100,7 @@ async function onStatusChanged(event) {
 }
 
 async function deleteOneTask(event) {
-
+    event.preventDefault();
     const target = event.target;
     if (
         !target.classList.contains("delete")
@@ -85,7 +113,7 @@ async function deleteOneTask(event) {
 
     try {
         let response = await post(`/api/task/${id}/delete`)
-        if (await response.ok) {
+        if (response.ok) {
             target.parentElement.remove()
         }
     } catch (_) {
@@ -126,7 +154,7 @@ function filterTasks(item) {
 async function filterPost() {
     const res = await post('/api/filter', { textFilter: filterInput.value })
     let item = await res.json()
-    await filterTasks(item)
+    filterTasks(item)
 }
 
 form.addEventListener("submit", onNewTodo);
@@ -134,12 +162,13 @@ tasks.addEventListener("click", onStatusChanged);
 tasks.addEventListener("click", deleteOneTask);
 clearTasks.addEventListener("click", deleteAllTasks);
 filterInput.addEventListener("keyup", filterPost);
+urgency.addEventListener('click', onStatusUrgent)
 
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-await task.forEach(t => showNewTodo(t));
+task.forEach(t => new Tasks(t).showNewTodo());
 
 let resFilter = await fetch('/api/filters')
 let filterItem = await resFilter.json()
 filterInput.value = filterItem
-await filterTasks(filterItem)
+filterTasks(filterItem)

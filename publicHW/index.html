@@ -16,11 +16,16 @@
     </h1>
     <div class="add-todo">
       <form id='todo-form' class="grid-x">
-        <input placeholder="New Task" id='new-item-text' name="text" type="text"
-          class="cell small-10" />
+        <input placeholder="New Task" id='new-item-text' name="text" type="text" class="cell small-10" />
         <button class="button cell small-2">Add</button>
+          <select>
+            <option value="notUrgent">Not urgent</option>
+            <option value="urgent">Urgent </option>
+            <input type="date" style="display:none;">
+          </select>
       </form>
     </div>
+
     <hr />
     <div class="todo-list">
       <h2>Tasks:</h2>
@@ -33,7 +38,7 @@
       <button class='clear-tasks button'>Clear Tasks</button>
     </div>
 
-  <script src="js/Lesson41HW.js" type="module"></script>
+    <script src="js/Lesson42HW.js" type="module"></script>
 </body>
 
 </html>
