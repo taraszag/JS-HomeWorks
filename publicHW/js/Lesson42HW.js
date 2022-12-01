@@ -19,7 +19,7 @@ const urgency = form.querySelector("select")
 
 
 class Tasks {
-    constructor({ id, text, isDone , dueDate ="not urgent"}) {
+    constructor({ id, text, isDone, dueDate = "not urgent" }) {
         this.id = id;
         this.text = text
         this.isDone = isDone
@@ -37,7 +37,7 @@ class Tasks {
         const taskText = document.createTextNode(` ${this.text} `);
 
         const taskDate = document.createTextNode(` ${this.dueDate} `);
-        
+
         const deleteButton = document.createElement("a");
         deleteButton.className = "delete";
         deleteButton.href = "#"
@@ -52,15 +52,16 @@ class Tasks {
     }
 }
 
-// class Urgency extends Tasks {
-//     constructor({ id, text, isDone, dueDate }) {
-//         super({ id, text, isDone });
-//         this.dueDate = dueDate
-//     }
-//     showNewTodoWithDate() {
+class Urgency extends Tasks {
+    constructor({ id, text, isDone, dueDate }) {
+        super({ id, text, isDone });
+        this.dueDate = dueDate
+    }
+    showNewTodoWithDate() {
+        super.showNewTodo()
 
-//       }
-// }
+    }
+}
 async function onNewTodo(event) {
     event.preventDefault();
 
@@ -71,10 +72,19 @@ async function onNewTodo(event) {
     urgency.value = "notUrgent"
     urgency.nextSibling.value = ''
     urgency.nextSibling.style = "display:none"
-        let response = await post('/api/task', { text, isDone: false,date})
+    if (date == "") {
+        let response = await post('/api/task', { text, isDone: false, date })
         let data = await response.json()
         new Tasks(data).showNewTodo()
+    } else {
+        let response = await post('/api/urgency', { text, isDone: false, date })
+        let data = await response.json()
+        new Urgency(data).showNewTodoWithDate()
     }
+}
+// let response = await post('/api/task', { text, isDone: false, date })
+// let data = await response.json()
+// new Tasks(data).showNewTodo()
 
 function onStatusUrgent() {
     if (urgency.value == "urgent") {
