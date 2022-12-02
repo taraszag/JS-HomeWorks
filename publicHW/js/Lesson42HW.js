@@ -19,10 +19,16 @@ const urgency = form.querySelector("select")
 
 
 class Tasks {
-    constructor({ id, text, isDone, dueDate = "not urgent" }) {
+    constructor({ id, text, isDone }) {
         this.id = id;
         this.text = text
         this.isDone = isDone
+    }
+}
+
+class Urgency extends Tasks {
+    constructor({ id, text, isDone, dueDate = 'not urgency' }) {
+        super({ id, text, isDone });
         this.dueDate = dueDate
     }
     showNewTodo() {
@@ -48,19 +54,8 @@ class Tasks {
         li.appendChild(taskDate);
         li.appendChild(deleteButton);
         tasks.appendChild(li);
-
     }
-}
 
-class Urgency extends Tasks {
-    constructor({ id, text, isDone, dueDate }) {
-        super({ id, text, isDone });
-        this.dueDate = dueDate
-    }
-    showNewTodoWithDate() {
-        super.showNewTodo()
-
-    }
 }
 async function onNewTodo(event) {
     event.preventDefault();
@@ -72,19 +67,10 @@ async function onNewTodo(event) {
     urgency.value = "notUrgent"
     urgency.nextSibling.value = ''
     urgency.nextSibling.style = "display:none"
-    if (date == "") {
-        let response = await post('/api/task', { text, isDone: false, date })
-        let data = await response.json()
-        new Tasks(data).showNewTodo()
-    } else {
-        let response = await post('/api/urgency', { text, isDone: false, date })
-        let data = await response.json()
-        new Urgency(data).showNewTodoWithDate()
-    }
+    let response = await post('/api/task', { text, isDone: false, dueDate:date})
+    let data = await response.json()
+    new Urgency(data).showNewTodo()
 }
-// let response = await post('/api/task', { text, isDone: false, date })
-// let data = await response.json()
-// new Tasks(data).showNewTodo()
 
 function onStatusUrgent() {
     if (urgency.value == "urgent") {
@@ -174,9 +160,10 @@ clearTasks.addEventListener("click", deleteAllTasks);
 filterInput.addEventListener("keyup", filterPost);
 urgency.addEventListener('click', onStatusUrgent)
 
+
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-task.forEach(t => new Tasks(t).showNewTodo());
+task.forEach(t => new Urgency(t).showNewTodo());
 
 let resFilter = await fetch('/api/filters')
 let filterItem = await resFilter.json()
