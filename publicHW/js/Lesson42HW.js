@@ -24,6 +24,28 @@ class Tasks {
         this.text = text
         this.isDone = isDone
     }
+    showNewTodo() {
+        const li = document.createElement("li");
+        li.className = "todo-item";
+        li.id = `item_${this.id}`;
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = this.isDone;
+
+        const taskText = document.createTextNode(` ${this.text} `);
+
+        const deleteButton = document.createElement("a");
+        deleteButton.className = "delete";
+        deleteButton.href = "#"
+        deleteButton.appendChild(document.createTextNode("x"));
+
+        li.appendChild(checkbox);
+        li.appendChild(taskText);
+        li.appendChild(deleteButton);
+        tasks.appendChild(li);
+    }
+
 }
 
 class Urgency extends Tasks {
@@ -31,7 +53,8 @@ class Urgency extends Tasks {
         super({ id, text, isDone });
         this.dueDate = dueDate
     }
-    showNewTodo() {
+
+    showNewTodoDate() {
         const li = document.createElement("li");
         li.className = "todo-item";
         li.id = `item_${this.id}`;
@@ -61,17 +84,23 @@ async function onNewTodo(event) {
     event.preventDefault();
 
     const text = taskInput.value;
-    const date = urgency.nextSibling.value
+    const dueDate = urgency.nextSibling.value
     if (text == '') return;
     taskInput.value = '';
     urgency.value = "notUrgent"
     urgency.nextSibling.value = ''
     urgency.nextSibling.style = "display:none"
-    let response = await post('/api/task', { text, isDone: false, dueDate:date})
-    let data = await response.json()
-    new Urgency(data).showNewTodo()
+    if (dueDate == "") {
+        let response = await post('/api/task', { text, isDone:false})
+        let data = await response.json()
+        new Tasks(data).showNewTodo()
+    } else {
+        let response = await post('/api/urgency', { text, isDone: false, dueDate: dueDate})
+        let data = await response.json()
+        new Urgency(data).showNewTodoDate()
+        console.log(data)
+    }
 }
-
 function onStatusUrgent() {
     if (urgency.value == "urgent") {
         urgency.nextSibling.style = "display:block"
@@ -81,8 +110,8 @@ function onStatusUrgent() {
 async function onStatusChanged(event) {
     const target = event.target;
     if (target.nodeName !== "INPUT") return;
-
     const checked = target.checked;
+
     const parent = target.parentElement;
     const [, id] = parent.id.split('_');
     try {
@@ -163,7 +192,7 @@ urgency.addEventListener('click', onStatusUrgent)
 
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-task.forEach(t => new Urgency(t).showNewTodo());
+task.forEach(t => new Urgency(t).showNewTodoDate());
 
 let resFilter = await fetch('/api/filters')
 let filterItem = await resFilter.json()

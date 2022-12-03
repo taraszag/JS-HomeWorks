@@ -22,7 +22,14 @@ app.use(express.json());
 let id = 1;
 
 app.post('/api/task', (req, res) => {
-  const task = { id, text: req.body.text, isDone: req.body.isDone, dueDate :req.body.dueDate};
+  const task = { id, text: req.body.text, isDone: req.body.isDone};
+  state.tasks.push(task);
+  id += 1;
+  res.json(task);
+});
+
+app.post('/api/urgency', (req, res) => {
+  const task = { id, text: req.body.text, isDone: req.body.isDone, dueDate:req.body.dueDate};
   state.tasks.push(task);
   id += 1;
   res.json(task);
