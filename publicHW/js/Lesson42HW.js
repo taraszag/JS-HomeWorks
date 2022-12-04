@@ -65,21 +65,19 @@ class Urgency extends Tasks {
 
         const taskText = document.createTextNode(` ${this.text} `);
 
-        const taskDate = document.createTextNode(` ${this.dueDate} `);
-
         const deleteButton = document.createElement("a");
         deleteButton.className = "delete";
         deleteButton.href = "#"
         deleteButton.appendChild(document.createTextNode("x"));
-
+        const taskDate = document.createTextNode(` ${this.dueDate} `);
         li.appendChild(checkbox);
         li.appendChild(taskText);
-        li.appendChild(taskDate);
+        li.appendChild(taskDate)
         li.appendChild(deleteButton);
         tasks.appendChild(li);
     }
 
-}
+}   
 async function onNewTodo(event) {
     event.preventDefault();
 
@@ -91,11 +89,11 @@ async function onNewTodo(event) {
     urgency.nextSibling.value = ''
     urgency.nextSibling.style = "display:none"
     if (dueDate == "") {
-        let response = await post('/api/task', { text, isDone:false})
+        let response = await post('/api/task', { text, isDone: false })
         let data = await response.json()
         new Tasks(data).showNewTodo()
     } else {
-        let response = await post('/api/urgency', { text, isDone: false, dueDate: dueDate})
+        let response = await post('/api/urgency', { text, isDone: false, dueDate: dueDate })
         let data = await response.json()
         new Urgency(data).showNewTodoDate()
         console.log(data)
@@ -109,9 +107,9 @@ function onStatusUrgent() {
 
 async function onStatusChanged(event) {
     const target = event.target;
+    console.log(target.parentElement)
     if (target.nodeName !== "INPUT") return;
     const checked = target.checked;
-
     const parent = target.parentElement;
     const [, id] = parent.id.split('_');
     try {
@@ -192,7 +190,11 @@ urgency.addEventListener('click', onStatusUrgent)
 
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-task.forEach(t => new Urgency(t).showNewTodoDate());
+task.forEach(t => new Tasks(t).showNewTodo());
+
+let resUrgTask = await fetch('/api/UrgTasks')
+let UrgTask = await resUrgTask.json()
+UrgTask.forEach(t => new Urgency(t).showNewTodoDate());
 
 let resFilter = await fetch('/api/filters')
 let filterItem = await resFilter.json()

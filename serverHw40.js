@@ -13,6 +13,7 @@ const state = {
   count: 0,
   itemsFilter: '',
   tasks: [],
+  urgentTask: [],
 };
 
 app.use(express.static("publicHW"));
@@ -30,7 +31,7 @@ app.post('/api/task', (req, res) => {
 
 app.post('/api/urgency', (req, res) => {
   const task = { id, text: req.body.text, isDone: req.body.isDone, dueDate:req.body.dueDate};
-  state.tasks.push(task);
+  state.urgentTask.push(task);
   id += 1;
   res.json(task);
 });
@@ -38,6 +39,11 @@ app.post('/api/urgency', (req, res) => {
 app.post('/api/task/:id/update', (req, res) => {
   const id = Number(req.params.id);
   const isDone = req.body.isDone;
+  for(let i = 0; i < state.urgentTask.length; i += 1) {
+    if (state.urgentTask[i].id === id) {
+      state.urgentTask[i].isDone = isDone;}
+      break;
+    }
   for(let i = 0; i < state.tasks.length; i += 1) {
     if (state.tasks[i].id === id) {
       state.tasks[i].isDone = isDone;
@@ -54,11 +60,18 @@ app.post('/api/task/:id/delete', (req, res) => {
       break;
     }
   }
+  for(let i = 0; i < state.urgentTask.length; i += 1) {
+    if (state.urgentTask[i].id === id) {
+      state.urgentTask.splice(i, 1)
+      break;
+    }
+  }
   res.end();
 })
 
 app.post('/api/task/delete/all', (req, res) => {
       state.tasks.splice(0,state.tasks.length)
+      state.urgentTask.splice(0,state.urgentTask.length)
   res.end();
 })
 
@@ -71,6 +84,10 @@ app.post('/api/filter', (req, res) => {
 
 app.get('/api/tasks', (req, res) => {
   res.json(state.tasks);
+});
+
+app.get('/api/UrgTasks', (req, res) => {
+  res.json(state.urgentTask);
 });
 
 app.get('/api/filters', (req, res) => {
