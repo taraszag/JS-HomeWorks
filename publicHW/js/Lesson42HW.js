@@ -49,17 +49,12 @@ class Tasks {
 }
 
 class Urgency extends Tasks {
-    constructor({ id, text, isDone, dueDate}) {
+    constructor({ id, text, isDone, dueDate }) {
         super({ id, text, isDone });
         this.dueDate = dueDate
     }
 
     showNewTodoDate() {
-    
-        if(this.dueDate == undefined){
-            super.showNewTodo()
-        }
-        else {
         const li = document.createElement("li");
         li.className = "todo-item";
         li.id = `item_${this.id}`;
@@ -81,10 +76,10 @@ class Urgency extends Tasks {
         li.appendChild(taskDate);
 
         li.appendChild(deleteButton);
-        tasks.appendChild(li);}
+        tasks.appendChild(li);
     }
-
 }
+
 async function onNewTodo(event) {
     event.preventDefault();
 
@@ -95,15 +90,16 @@ async function onNewTodo(event) {
     urgency.value = "notUrgent"
     urgency.nextSibling.value = ''
     urgency.nextSibling.style = "display:none"
-    if (dueDate == "") {
+
+    if (dueDate == '') {
         let response = await post('/api/task', { text, isDone: false })
         let data = await response.json()
         new Tasks(data).showNewTodo()
-    } else {
-        let response = await post('/api/urgency', { text, isDone: false, dueDate: dueDate })
+    }
+    else {
+        let response = await post('/api/task', { text, isDone: false, dueDate: dueDate })
         let data = await response.json()
         new Urgency(data).showNewTodoDate()
-        console.log(data)
     }
 }
 function onStatusUrgent() {
@@ -197,7 +193,12 @@ urgency.addEventListener('click', onStatusUrgent)
 
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-task.forEach(t => new Urgency(t).showNewTodoDate());
+
+task.forEach(t => {
+    if (t.dueDate) {
+        new Urgency(t).showNewTodoDate()
+    } else new Tasks(t).showNewTodo()
+})
 
 
 let resFilter = await fetch('/api/filters')
