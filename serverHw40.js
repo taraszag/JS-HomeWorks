@@ -18,14 +18,21 @@ const state = {
 app.use(express.static("publicHW"));
 app.use(express.json());
 
+function *generateId() {
+  for (let i = 1;; i += 1) {
+    yield i;
+  }
+}
 
-let id = 1;
+const generator = generateId();
+let id = 0
+
 
 app.post('/api/task', (req, res) => {
 
   const task = { id, text: req.body.text, isDone: req.body.isDone, dueDate:req.body.dueDate};
+  id = generator.next().value
   state.tasks.push(task);
-  id += 1;
   res.json(task);
 });
 

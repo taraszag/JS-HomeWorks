@@ -19,7 +19,7 @@ const urgency = form.querySelector("select")
 
 
 class Tasks {
-    constructor({ id, text, isDone }) {
+    constructor({ id, text, isDone}) {
         this.id = id;
         this.text = text
         this.isDone = isDone
@@ -54,7 +54,8 @@ class Urgency extends Tasks {
         this.dueDate = dueDate
     }
 
-    showNewTodoDate() {
+    showNewTodo() {
+
         const li = document.createElement("li");
         li.className = "todo-item";
         li.id = `item_${this.id}`;
@@ -92,14 +93,14 @@ async function onNewTodo(event) {
     urgency.nextSibling.style = "display:none"
 
     if (dueDate == '') {
-        let response = await post('/api/task', { text, isDone: false })
+        let response = await post('/api/task', { text, isDone:false })
         let data = await response.json()
         new Tasks(data).showNewTodo()
     }
     else {
-        let response = await post('/api/task', { text, isDone: false, dueDate: dueDate })
+        let response = await post('/api/task', { text, isDone:false, dueDate: dueDate })
         let data = await response.json()
-        new Urgency(data).showNewTodoDate()
+        new Urgency(data).showNewTodo()
     }
 }
 function onStatusUrgent() {
@@ -112,7 +113,6 @@ async function onStatusChanged(event) {
     const target = event.target;
     if (target.nodeName !== "INPUT") return;
     const checked = target.checked;
-
     const parent = target.parentElement;
     const [, id] = parent.id.split('_');
     try {
@@ -193,11 +193,10 @@ urgency.addEventListener('click', onStatusUrgent)
 
 let resTask = await fetch('/api/tasks')
 let task = await resTask.json()
-
 task.forEach(t => {
     if (t.dueDate) {
-        new Urgency(t).showNewTodoDate()
-    } else new Tasks(t).showNewTodo()
+        new Urgency(t).showNewTodo()
+    } else {new Tasks(t).showNewTodo()}
 })
 
 
